@@ -42,7 +42,7 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
     """Фильмы и телешоу."""
 
     MIN_RATING = 0
-    MAX_RATING = 10
+    MAX_RATING = 100
 
     class Type(models.TextChoices):
         MOVIE = 'MV', 'Movie'
@@ -52,6 +52,8 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
     description = models.TextField('description', blank=True)
     creation_date = models.DateField()
     rating = models.FloatField(
+        'rating',
+        blank=True,
         validators=[
             MinValueValidator(MIN_RATING),
             MaxValueValidator(MAX_RATING),
