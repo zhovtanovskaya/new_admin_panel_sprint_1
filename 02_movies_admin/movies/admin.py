@@ -21,7 +21,8 @@ class FilmWorkAdmin(admin.ModelAdmin):
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'description', )
+    search_fields = ('name', 'description', 'id',)
 
 
 @admin.register(Person)
