@@ -60,6 +60,7 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
         ],
     )
     type = models.CharField('type', max_length=2, choices=Type.choices)
+    genres = models.ManyToManyField(Genre, through='GenreFilmwork')
 
     class Meta:
         db_table = 'content\".\"film_work'
@@ -68,3 +69,12 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
 
     def __str__(self):
         return self.title
+
+   
+class GenreFilmWork(UUIDMixin):
+    film_work = models.ForeignKey('FilmWork', on_delete=models.CASCADE)
+    genre = models.ForeignKey('Genre', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'content\".\"genre_film_work'
