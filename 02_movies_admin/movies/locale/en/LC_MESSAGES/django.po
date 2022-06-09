@@ -1,14 +1,9 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-08 07:16+0000\n"
+"POT-Creation-Date: 2022-06-09 04:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,11 +25,11 @@ msgstr ""
 msgid "description"
 msgstr ""
 
-#: movies/models.py:35 movies/models.py:78 movies/models.py:83
+#: movies/models.py:35 movies/models.py:80 movies/models.py:85
 msgid "genre"
 msgstr ""
 
-#: movies/models.py:36 movies/models.py:84
+#: movies/models.py:36 movies/models.py:86
 msgid "genres"
 msgstr ""
 
@@ -70,22 +65,22 @@ msgstr ""
 msgid "film works"
 msgstr ""
 
-#: movies/models.py:91
+#: movies/models.py:95
 msgid "full name"
 msgstr ""
 
-#: movies/models.py:96 movies/models.py:106
+#: movies/models.py:100 movies/models.py:112
 msgid "person"
 msgstr ""
 
-#: movies/models.py:97
+#: movies/models.py:101
 msgid "persons"
 msgstr ""
 
-#: movies/models.py:107 movies/models.py:112
+#: movies/models.py:113 movies/models.py:118
 msgid "role"
 msgstr ""
 
-#: movies/models.py:113
+#: movies/models.py:119
 msgid "roles"
 msgstr ""
