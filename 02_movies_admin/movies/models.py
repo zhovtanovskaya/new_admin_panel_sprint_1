@@ -40,7 +40,7 @@ class Genre(UUIDMixin, TimeStampedMixin):
 
 
 class FilmWork(UUIDMixin, TimeStampedMixin):
-    """Фильмы и телешоу."""
+    """Фильм или телешоу."""
 
     MIN_RATING = 0
     MAX_RATING = 100
@@ -73,6 +73,8 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
 
    
 class GenreFilmWork(UUIDMixin):
+    """Связь "много-ко-многим" между фильмами и жанрами."""
+
     film_work = models.ForeignKey('FilmWork', on_delete=models.CASCADE)
     genre = models.ForeignKey(
         'Genre', verbose_name=_('genre'), on_delete=models.CASCADE)
@@ -88,6 +90,8 @@ class GenreFilmWork(UUIDMixin):
 
 
 class Person(UUIDMixin, TimeStampedMixin):
+    """Участник команды производства фильма."""
+
     full_name = models.CharField(_('full name'), max_length=255)
     roles = models.ManyToManyField(FilmWork, through='PersonFilmWork')
 
@@ -101,6 +105,8 @@ class Person(UUIDMixin, TimeStampedMixin):
 
 
 class PersonFilmWork(UUIDMixin):
+    """Связь "много-ко-многим" между фильмами и участниками."""
+
     film_work = models.ForeignKey('FilmWork', on_delete=models.CASCADE)
     person = models.ForeignKey(
         'Person', verbose_name=_('person'), on_delete=models.CASCADE)
