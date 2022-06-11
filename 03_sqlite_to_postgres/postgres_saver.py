@@ -5,14 +5,6 @@ import psycopg2
 from psycopg2.errors import UniqueViolation
 from psycopg2.extras import DictCursor
 
-DSL = {
-    'dbname': 'movies_database', 
-    'user': 'app', 
-    'password': '123qwe', 
-    'host': '127.0.0.1', 
-    'port': 5432,
-}
-
 
 @contextmanager
 def postgres_connection(dsl: dict):
@@ -22,14 +14,16 @@ def postgres_connection(dsl: dict):
 
 
 class PostgresSaver:
+
+    def __init__(self, connection: psycopg2.extensions.connection):
+        self.connection = connection
     
     def save_person(self, id: uuid, full_name: str):
-        with postgres_connection(DSL) as connection:
-            with connection.cursor() as cursor:
-                sql = 'INSERT INTO person(id, full_name) VALUES (%s, %s);'
-                values = (id, full_name)
-                try:
-                    cursor.execute(sql, values)
-                except UniqueViolation as e:
-                    print(e)
-                connection.commit()
+        with self.connection.cursor() as cursor:
+            sql = 'INSERT INTO person(id, full_name) VALUES (%s, %s);'
+            values = (id, full_name)
+            try:
+                cursor.execute(sql, values)
+            except UniqueViolation as e:
+                print(e)
+            self.connection.commit()
