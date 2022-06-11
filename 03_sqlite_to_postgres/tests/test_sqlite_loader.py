@@ -3,7 +3,7 @@ from unittest import TestCase, main
 from sqlite_loader import SQLiteLoader
 
 
-class TestStringMethods(TestCase):
+class TestSQLiteLoader(TestCase):
 
     def setUp(self):
         self.loader = loader = SQLiteLoader()
