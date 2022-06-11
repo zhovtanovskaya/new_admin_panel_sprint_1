@@ -1,34 +1,14 @@
 import sqlite3
-import uuid
 from contextlib import contextmanager
-from dataclasses import dataclass, field
 
-
-@dataclass(frozen=True)
-class FilmWork:
-    title: str
-    description: str
-    file_path: str
-    type: str
-    creation_date: str
-    created_at: str
-    updated_at: str
-    rating: float = field(default=0.0)
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
-
-
-@dataclass(frozen=True)
-class Person:
-    full_name: str
-    created_at: str
-    updated_at: str
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
+from db_objects import FilmWork, Person
 
 
 def create_connection(db_path: str):
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
+
 
 @contextmanager
 def sqlite_connection(db_path: str):
@@ -47,7 +27,7 @@ class SQLiteLoader:
         'person_film_work': None,
     }
 
-    def __init__(self, connection):
+    def __init__(self, connection: sqlite3.Connection):
         self.connection = connection
 
     def _load_data(self, table_name):
