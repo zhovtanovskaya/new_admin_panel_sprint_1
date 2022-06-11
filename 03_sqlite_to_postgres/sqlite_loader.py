@@ -17,6 +17,14 @@ class FilmWork:
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
+@dataclass(frozen=True)
+class Person:
+    full_name: str
+    created_at: str
+    updated_at: str
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+
 @contextmanager
 def conn_context(db_path: str):
     conn = sqlite3.connect(db_path)
@@ -29,25 +37,26 @@ class SQLiteLoader:
     """Загрузчик содержимого таблиц SQLite."""
 
     db_path = 'db.sqlite'
-    KNOWN_TABLES = (
-        'film_work',
-        'person',
-        'genre',
-        'genre_film_work',
-        'person_film_work',
-    )
+    KNOWN_TABLES = {
+        'film_work': FilmWork,
+        'person': Person,
+        'genre': None,
+        'genre_film_work': None,
+        'person_film_work': None,
+    }
 
     def _load_data(self, table_name):
         error = 'Unknown table {table}".'.format(table=table_name)
-        assert table_name in self.KNOWN_TABLES, error
+        assert table_name in self.KNOWN_TABLES.keys(), error
+        TableDataClass = self.KNOWN_TABLES[table_name]
         with conn_context(self.db_path) as conn:
             curs = conn.cursor()
             curs.execute("SELECT * FROM {table};".format(table=table_name))
             data = curs.fetchall()
             for row in data:
                 row_dict = dict(zip(row.keys(), tuple(row)))
-                film_work = FilmWork(**row_dict)
-                yield film_work
+                obj = TableDataClass(**row_dict)
+                yield obj
 
     def load_film_works(self):
         table_name = 'film_work'

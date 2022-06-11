@@ -5,12 +5,18 @@ from sqlite_loader import SQLiteLoader
 
 class TestStringMethods(TestCase):
 
+    def setUp(self):
+        self.loader = loader = SQLiteLoader()
+
     def test_load_film_works(self):
-        loader = SQLiteLoader()
-        data = loader.load_film_works()
+        data = self.loader.load_film_works()
         record = next(data)
-        first_id = '3d825f60-9fff-4dfe-b294-1a45fa1e115d'
-        self.assertEqual(first_id, record.id)
+        self.assertEqual('Star Wars: Episode IV - A New Hope', record.title)
+
+    def test_load_persons(self):
+        data = self.loader.load_persons()
+        record = next(data)
+        self.assertEqual('George Lucas', record.full_name)
 
 
 if __name__ == '__main__':
