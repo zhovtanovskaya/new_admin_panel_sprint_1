@@ -1,12 +1,18 @@
 from unittest import TestCase, main
 
-from sqlite_loader import SQLiteLoader
+from sqlite_loader import SQLiteLoader, create_connection
+
+DB_PATH = 'db.sqlite'
 
 
 class TestSQLiteLoader(TestCase):
 
     def setUp(self):
-        self.loader = loader = SQLiteLoader()
+        self.connection = create_connection(DB_PATH)
+        self.loader = SQLiteLoader(self.connection)
+
+    def tearDown(self):
+        self.connection.close()
 
     def test_load_film_works(self):
         data = self.loader.load_film_works()
