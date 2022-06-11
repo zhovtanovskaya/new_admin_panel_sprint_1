@@ -1,5 +1,20 @@
 import sqlite3
+import uuid
 from contextlib import contextmanager
+from dataclasses import dataclass, field
+
+
+@dataclass(frozen=True)
+class FilmWork:
+    title: str
+    description: str
+    file_path: str
+    type: str
+    creation_date: str
+    created_at: str
+    updated_at: str
+    rating: float = field(default=0.0)
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
 @contextmanager
@@ -11,6 +26,7 @@ def conn_context(db_path: str):
 
 
 class SQLiteLoader:
+    """Загрузчик содержимого таблиц SQLite."""
 
     db_path = 'db.sqlite'
     KNOWN_TABLES = (
@@ -29,7 +45,9 @@ class SQLiteLoader:
             curs.execute("SELECT * FROM {table};".format(table=table_name))
             data = curs.fetchall()
             for row in data:
-                yield dict(zip(row.keys(), tuple(row)))        
+                row_dict = dict(zip(row.keys(), tuple(row)))
+                film_work = FilmWork(**row_dict)
+                yield film_work
 
     def load_film_works(self):
         table_name = 'film_work'
