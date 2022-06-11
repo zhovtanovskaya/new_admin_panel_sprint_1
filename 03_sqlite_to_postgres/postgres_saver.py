@@ -1,7 +1,8 @@
+import uuid
 from contextlib import contextmanager
 
 import psycopg2
-# from psycopg2.errors import UniqueViolation
+from psycopg2.errors import UniqueViolation
 from psycopg2.extras import DictCursor
 
 DSL = {
@@ -22,13 +23,13 @@ def postgres_connection(dsl: dict):
 
 class PostgresSaver:
     
-    def save(self):
+    def save_person(self, id: uuid, full_name: str):
         with postgres_connection(DSL) as connection:
             with connection.cursor() as cursor:
                 sql = 'INSERT INTO person(id, full_name) VALUES (%s, %s);'
-                values = ('3d825f60-9fff-4dfe-b294-1a45fa1e115d', 'George Lucas')
-                cursor.execute(sql, values)
-                cursor.execute('SELECT * FROM person;')
-                for record in cursor:
-                    print(record)
+                values = (id, full_name)
+                try:
+                    cursor.execute(sql, values)
+                except UniqueViolation as e:
+                    print(e)
                 connection.commit()
