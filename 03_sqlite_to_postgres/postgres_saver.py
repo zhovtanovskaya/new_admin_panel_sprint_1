@@ -8,9 +8,13 @@ from psycopg2.extensions import connection as PGConnection
 from psycopg2.extras import DictCursor
 
 
+def create_connection(dsl: dict):
+    return psycopg2.connect(**dsl, cursor_factory=DictCursor)
+
+
 @contextmanager
 def postgres_connection(dsl: dict):
-    connection = psycopg2.connect(**dsl, cursor_factory=DictCursor)
+    connection = self.create_connection(dsl)
     yield connection
     connection.close()
 
