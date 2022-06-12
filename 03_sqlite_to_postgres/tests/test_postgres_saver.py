@@ -70,6 +70,7 @@ class TestPostgresSaverSaveFilmWork(PostgresTableTestCase):
             'description': 'The Imperial Forces...',
             'rating': 8.6,
             'type': 'movie',
+            'creation_date': datetime(2022, 6, 11).date(),
         }
         film_work = FilmWork(**self.data)
         saver.save_film_work(film_work)

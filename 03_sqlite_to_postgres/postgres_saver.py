@@ -5,11 +5,11 @@ import psycopg2
 from db_objects import FilmWork, Person
 from psycopg2.errors import UniqueViolation
 from psycopg2.extensions import connection as PGConnection
-from psycopg2.extras import DictCursor
+from psycopg2.extras import RealDictCursor
 
 
 def create_connection(dsl: dict):
-    return psycopg2.connect(**dsl, cursor_factory=DictCursor)
+    return psycopg2.connect(**dsl, cursor_factory=RealDictCursor)
 
 
 @contextmanager
@@ -43,9 +43,9 @@ class PostgresSaver:
     def save_film_work(self, film_work: FilmWork):
         sql = '''
             INSERT INTO film_work (
-                id, title, description, rating, type, created, modified
+                id, title, description, rating, type, creation_date, created, modified
             )
-            VALUES (%s, %s, %s, %s, %s, NOW(), NOW());
+            VALUES (%s, %s, %s, %s, %s, %s, NOW(), NOW());
         '''
         values = (
             film_work.id,
@@ -53,5 +53,6 @@ class PostgresSaver:
             film_work.description,
             film_work.rating,
             film_work.type,
+            film_work.creation_date,
         )
         self._execute_sql(sql, values)
