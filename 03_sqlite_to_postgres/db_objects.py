@@ -8,11 +8,11 @@ from dataclasses import dataclass, field
 class FilmWork:
     title: str
     description: str
-    file_path: str
     type: str
     creation_date: str
-    created_at: str
-    updated_at: str
+    file_path: str = ''
+    created_at: str = ''
+    updated_at: str = ''
     rating: float = field(default=0.0)
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
@@ -20,6 +20,6 @@ class FilmWork:
 @dataclass(frozen=True)
 class Person:
     full_name: str
-    created_at: str
-    updated_at: str
+    created_at: str = ''
+    updated_at: str = ''
     id: uuid.UUID = field(default_factory=uuid.uuid4)
