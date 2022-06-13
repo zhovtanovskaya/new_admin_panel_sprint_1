@@ -27,3 +27,30 @@ class Person:
     created_at: str = ''
     updated_at: str = ''
     id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+
+DESTINATION_MAPPING = { 
+    Person: {
+        'destination_table': 'person',
+        'attribute_to_column': {
+             'id': 'id',
+             'full_name': 'full_name',
+             'created_at': 'created',
+             'updated_at': 'modified',                    
+        }
+    },
+    FilmWork: {
+        'destination_table': 'film_work',
+        'attribute_to_column': {
+            # Имя атрибута и соответствующий ему столбец в базе.
+             'id': 'id',
+             'title': 'title',
+             'description': 'description',
+             'rating': 'rating',
+             'type': 'type',
+             'creation_date': 'creation_date',
+             'created_at': 'created',
+             'updated_at': 'modified',
+        }
+    }
+}

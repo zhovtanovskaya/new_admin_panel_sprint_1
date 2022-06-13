@@ -3,7 +3,7 @@
 from contextlib import contextmanager
 
 import psycopg2
-from db_objects import FilmWork, Person
+from db_objects import DESTINATION_MAPPING, FilmWork, Person
 from psycopg2.errors import UniqueViolation
 from psycopg2.extensions import connection as pg_connection
 from psycopg2.extras import RealDictCursor
@@ -53,34 +53,21 @@ class PostgresSaver:
                 print(e)
             self.connection.commit()
 
-    def save_person(self, person: Person):
-        table_name = 'person'
-        columns = ('id', 'full_name', 'created', 'modified')
-        values = (person.id, person.full_name, None, None)
-        sql = self._compose_insert_sql(table_name, columns)
-        self._execute_sql(sql, values)
+    def save(self, obj):
+        obj_type = type(obj)
+        assert obj_type in DESTINATION_MAPPING, \
+            'Неизвестный тип "{type}".'.format(type=obj_type)
+        destinations = DESTINATION_MAPPING[obj_type]
+        
+        attribute_mapping = destinations['attribute_to_column']
+        columns = []
+        values = []
+        for attr_name, col_name in attribute_mapping.items():
+            value = getattr(obj, attr_name)
+            if value:
+                values.append(value)
+                columns.append(col_name)
 
-    def save_film_work(self, film_work: FilmWork):
-        table_name = 'film_work'
-        columns = (
-            'id',
-            'title',
-            'description',
-            'rating',
-            'type',
-            'creation_date',
-            'created',
-            'modified',
-        )
-        values = (
-            film_work.id,
-            film_work.title,
-            film_work.description,
-            film_work.rating,
-            film_work.type,
-            film_work.creation_date,
-            None,
-            None
-        )
+        table_name = destinations['destination_table']
         sql = self._compose_insert_sql(table_name, columns)
         self._execute_sql(sql, values)

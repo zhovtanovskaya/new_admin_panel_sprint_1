@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest import TestCase, main
 
 from db_objects import FilmWork, Person
@@ -18,8 +18,14 @@ class PostgresTableTestCase(TestCase):
 
     table_name = ''
 
+    def _truncate(self):
+        with self.connection.cursor() as curs:
+            curs.execute('TRUNCATE {table} CASCADE;'.format(table=self.table_name))
+        self.connection.commit()
+
     def setUp(self):
         self.connection = create_connection(DSL)
+        self._truncate()
 
     def fetchall(self):
         with self.connection.cursor() as curs:
@@ -27,9 +33,7 @@ class PostgresTableTestCase(TestCase):
             return curs.fetchall()
 
     def tearDown(self):
-        with self.connection.cursor() as curs:
-            curs.execute('TRUNCATE {table} CASCADE;'.format(table=self.table_name))
-        self.connection.commit()
+        self._truncate()
         self.connection.close()
 
 
@@ -45,7 +49,7 @@ class TestPostgresSaverSavePerson(PostgresTableTestCase):
             'full_name': 'George Lucas',
         }
         person = Person(**self.data)
-        saver.save_person(person)
+        saver.save(person)
 
     def test_data_in_columns(self):
         row = self.fetchall()[0]
@@ -71,14 +75,23 @@ class TestPostgresSaverSaveFilmWork(PostgresTableTestCase):
             'rating': 8.6,
             'type': 'movie',
             'creation_date': datetime(2022, 6, 11).date(),
+            
         }
-        film_work = FilmWork(**self.data)
-        saver.save_film_work(film_work)
+        self.created_at = datetime(2022, 6, 11, tzinfo=timezone.utc)
+        self.updated_at = datetime(2022, 6, 11, tzinfo=timezone.utc)
+        film_work = FilmWork(
+            **self.data, 
+            created_at=self.created_at,
+            updated_at=self.updated_at,
+        )
+        saver.save(film_work)
 
     def test_data_in_columns(self):
         row = self.fetchall()[0]
         for key in self.data.keys():
             self.assertEqual(self.data[key], row.get(key))
+        self.assertEqual(self.created_at, row.get('created'))
+        self.assertEqual(self.updated_at, row.get('modified'))
 
     def test_created_one_row(self):
         rows = self.fetchall()
