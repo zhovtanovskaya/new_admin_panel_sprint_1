@@ -12,8 +12,9 @@ def create_connection(db_path: str):
 
 @contextmanager
 def sqlite_connection(db_path: str):
+    connection = create_connection(db_path)
     yield create_connection(db_path)
-    conn.close()
+    connection.close()
 
 
 class SQLiteLoader:
@@ -31,11 +32,11 @@ class SQLiteLoader:
         self.connection = connection
 
     def _load_data(self, table_name):
-        error = 'Unknown table {table}".'.format(table=table_name)
+        error = 'Unknown table "{table}".'.format(table=table_name)
         assert table_name in self.KNOWN_TABLES.keys(), error
         TableDataClass = self.KNOWN_TABLES[table_name]
         curs = self.connection.cursor()
-        curs.execute("SELECT * FROM {table};".format(table=table_name))
+        curs.execute('SELECT * FROM {table};'.format(table=table_name))
         data = curs.fetchall()
         for row in data:
             row_dict = dict(zip(row.keys(), tuple(row)))
