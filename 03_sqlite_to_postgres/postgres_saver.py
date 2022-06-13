@@ -34,6 +34,17 @@ class PostgresSaver:
     def __init__(self, connection: pg_connection):
         self.connection = connection
 
+    def _compose_insert_sql(self, table_name, columns):
+        placeholders = ('%s',) * len(columns)
+        sql = '''
+            INSERT INTO {table} ({columns})
+            VALUES ({placeholders});
+        '''.format(
+            table=table_name, 
+            columns=', '.join(columns), 
+            placeholders=', '.join(placeholders))
+        return sql
+
     def _execute_sql(self, sql: str, values: tuple):
         with self.connection.cursor() as cursor:
             try:
@@ -43,27 +54,24 @@ class PostgresSaver:
             self.connection.commit()
 
     def save_person(self, person: Person):
-        sql = '''
-            INSERT INTO person (id, full_name, created, modified)
-            VALUES (%s, %s, NOW(), NOW());
-        '''
-        values = (person.id, person.full_name)
+        table_name = 'person'
+        columns = ('id', 'full_name', 'created', 'modified')
+        values = (person.id, person.full_name, None, None)
+        sql = self._compose_insert_sql(table_name, columns)
         self._execute_sql(sql, values)
 
     def save_film_work(self, film_work: FilmWork):
-        sql = '''
-            INSERT INTO film_work (
-                id,
-                title,
-                description,
-                rating,
-                type,
-                creation_date,
-                created,
-                modified
-            )
-            VALUES (%s, %s, %s, %s, %s, %s, NOW(), NOW());
-        '''
+        table_name = 'film_work'
+        columns = (
+            'id',
+            'title',
+            'description',
+            'rating',
+            'type',
+            'creation_date',
+            'created',
+            'modified',
+        )
         values = (
             film_work.id,
             film_work.title,
@@ -71,5 +79,8 @@ class PostgresSaver:
             film_work.rating,
             film_work.type,
             film_work.creation_date,
+            None,
+            None
         )
+        sql = self._compose_insert_sql(table_name, columns)
         self._execute_sql(sql, values)
