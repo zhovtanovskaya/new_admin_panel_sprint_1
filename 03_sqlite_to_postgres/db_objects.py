@@ -29,6 +29,15 @@ class Person:
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
+SOURCE_MAPPING = {
+    FilmWork: 'film_work',
+    Person: 'person',
+    None: 'genre',
+    None: 'genre_film_work',
+    None: 'person_film_work',
+}
+
+
 DESTINATION_MAPPING = { 
     Person: {
         'destination_table': 'person',

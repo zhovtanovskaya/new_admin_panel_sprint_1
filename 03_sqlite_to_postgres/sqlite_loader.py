@@ -1,7 +1,7 @@
 import sqlite3
 from contextlib import contextmanager
 
-from db_objects import FilmWork, Person
+from db_objects import SOURCE_MAPPING, FilmWork, Person
 
 
 def create_connection(db_path: str):
@@ -20,21 +20,11 @@ def sqlite_connection(db_path: str):
 class SQLiteLoader:
     """Загрузчик содержимого таблиц SQLite."""
 
-    KNOWN_TABLES = {
-        'film_work': FilmWork,
-        'person': Person,
-        'genre': None,
-        'genre_film_work': None,
-        'person_film_work': None,
-    }
-
     def __init__(self, connection: sqlite3.Connection):
         self.connection = connection
 
-    def _load_data(self, table_name):
-        error = 'Unknown table "{table}".'.format(table=table_name)
-        assert table_name in self.KNOWN_TABLES.keys(), error
-        TableDataClass = self.KNOWN_TABLES[table_name]
+    def _load_data(self, TableDataClass):
+        table_name = SOURCE_MAPPING[TableDataClass]
         curs = self.connection.cursor()
         curs.execute('SELECT * FROM {table};'.format(table=table_name))
         data = curs.fetchall()
@@ -44,13 +34,8 @@ class SQLiteLoader:
             yield obj
 
     def load_film_works(self):
-        table_name = 'film_work'
-        return self._load_data(table_name)
+        return self._load_data(FilmWork)
 
     def load_persons(self):
-        table_name = 'person'
-        return self._load_data(table_name)
+        return self._load_data(Person)
 
-    def load_genres(self):
-        table_name = 'genre'
-        return self._load_data(table_name)

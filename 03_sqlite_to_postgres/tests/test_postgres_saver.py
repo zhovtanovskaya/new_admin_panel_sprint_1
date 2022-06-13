@@ -43,12 +43,12 @@ class TestPostgresSaverSavePerson(PostgresTableTestCase):
 
     def setUp(self):
         super().setUp()
-        saver = PostgresSaver(self.connection)
         self.data = {
             'id': str(uuid.uuid4()),
             'full_name': 'George Lucas',
         }
         person = Person(**self.data)
+        saver = PostgresSaver(self.connection)
         saver.save(person)
 
     def test_data_in_columns(self):
@@ -67,7 +67,6 @@ class TestPostgresSaverSaveFilmWork(PostgresTableTestCase):
 
     def setUp(self):
         super().setUp()
-        saver = PostgresSaver(self.connection)
         self.data = {
             'id': str(uuid.uuid4()),
             'title': ' Star Wars: Episode IV - A New Hope',
@@ -84,6 +83,7 @@ class TestPostgresSaverSaveFilmWork(PostgresTableTestCase):
             created_at=self.created_at,
             updated_at=self.updated_at,
         )
+        saver = PostgresSaver(self.connection)
         saver.save(film_work)
 
     def test_data_in_columns(self):
