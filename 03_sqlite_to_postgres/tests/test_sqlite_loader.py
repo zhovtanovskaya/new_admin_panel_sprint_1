@@ -6,7 +6,6 @@ DB_PATH = 'db.sqlite'
 
 
 class TestSQLiteLoader(TestCase):
-
     def setUp(self):
         self.connection = create_connection(DB_PATH)
         self.loader = SQLiteLoader(self.connection)

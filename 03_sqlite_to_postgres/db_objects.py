@@ -1,4 +1,4 @@
-"""Python-представление объектов, импортируемых из SQLite."""
+"""Python-представление данных, импортируемых из SQLite."""
 
 import uuid
 from dataclasses import dataclass, field
@@ -6,6 +6,8 @@ from dataclasses import dataclass, field
 
 @dataclass(frozen=True)
 class FilmWork:
+    """Объектное представление строк таблицы film_work."""
+
     title: str
     description: str
     type: str
@@ -19,6 +21,8 @@ class FilmWork:
 
 @dataclass(frozen=True)
 class Person:
+    """Объектное предславление строк таблицы person."""
+
     full_name: str
     created_at: str = ''
     updated_at: str = ''

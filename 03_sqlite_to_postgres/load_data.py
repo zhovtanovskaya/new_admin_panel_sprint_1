@@ -1,19 +1,23 @@
+"""Основной модуль для импорта кино из SQLite в PostgreSQL."""
+
 import os
 import sqlite3
 
-import psycopg2
 from dotenv import load_dotenv
 from postgres_saver import PostgresSaver, postgres_connection
-from psycopg2.extensions import connection as PGConnection
-from psycopg2.extras import DictCursor
+from psycopg2.extensions import connection as pg_connection
 from sqlite_loader import SQLiteLoader, sqlite_connection
 
 load_dotenv()
 
 
-def load_from_sqlite(sqlite_conn: sqlite3.Connection, pg_conn: PGConnection):
-    """Основной метод загрузки данных из SQLite в Postgres."""
+def load_from_sqlite(sqlite_conn: sqlite3.Connection, pg_conn: pg_connection):
+    """Основной метод загрузки данных из SQLite в Postgres.
 
+    Args:
+        sqlite_conn: подключение к базе источкику данных SQLite.
+        pg_conn: подключение к базе приемнику данных в PostgreSQL.
+    """
     loader = SQLiteLoader(sqlite_conn)
     saver = PostgresSaver(pg_conn)
     with pg_conn.cursor() as curs:
@@ -32,10 +36,10 @@ def load_from_sqlite(sqlite_conn: sqlite3.Connection, pg_conn: PGConnection):
 
 if __name__ == '__main__':
     dsl = {
-        'dbname': os.getenv('POSTGRES_DB_NAME'), 
-        'user': os.getenv('POSTGRES_DB_USER'), 
+        'dbname': os.getenv('POSTGRES_DB_NAME'),
+        'user': os.getenv('POSTGRES_DB_USER'),
         'password': os.getenv('POSTGRES_DB_PASSWORD'),
-        'host': '127.0.0.1', 
+        'host': '127.0.0.1',
         'port': 5432,
     }
     sqlite_db_name = os.getenv('SQLITE_DB_NAME')

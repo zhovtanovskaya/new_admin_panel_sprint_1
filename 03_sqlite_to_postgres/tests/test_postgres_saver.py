@@ -6,10 +6,10 @@ from db_objects import FilmWork, Person
 from postgres_saver import PostgresSaver, create_connection
 
 DSL = {
-    'dbname': 'movies_database', 
-    'user': 'app', 
-    'password': '123qwe', 
-    'host': '127.0.0.1', 
+    'dbname': 'movies_database',
+    'user': 'app',
+    'password': '123qwe',
+    'host': '127.0.0.1',
     'port': 5432,
 }
 
@@ -23,12 +23,12 @@ class PostgresTableTestCase(TestCase):
 
     def fetchall(self):
         with self.connection.cursor() as curs:
-            curs.execute("SELECT * FROM {table};".format(table=self.table_name))
+            curs.execute('SELECT * FROM {table};'.format(table=self.table_name))
             return curs.fetchall()
 
     def tearDown(self):
         with self.connection.cursor() as curs:
-            curs.execute("TRUNCATE {table} CASCADE;".format(table=self.table_name))
+            curs.execute('TRUNCATE {table} CASCADE;'.format(table=self.table_name))
         self.connection.commit()
         self.connection.close()
 
@@ -41,7 +41,7 @@ class TestPostgresSaverSavePerson(PostgresTableTestCase):
         super().setUp()
         saver = PostgresSaver(self.connection)
         self.data = {
-            'id': str(uuid.uuid4()), 
+            'id': str(uuid.uuid4()),
             'full_name': 'George Lucas',
         }
         person = Person(**self.data)
@@ -65,7 +65,7 @@ class TestPostgresSaverSaveFilmWork(PostgresTableTestCase):
         super().setUp()
         saver = PostgresSaver(self.connection)
         self.data = {
-            'id': str(uuid.uuid4()), 
+            'id': str(uuid.uuid4()),
             'title': ' Star Wars: Episode IV - A New Hope',
             'description': 'The Imperial Forces...',
             'rating': 8.6,
