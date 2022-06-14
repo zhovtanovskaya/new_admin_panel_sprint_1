@@ -3,7 +3,7 @@
 from contextlib import contextmanager
 
 import psycopg2
-from db_objects import DESTINATION_MAPPING, FilmWork, Person
+from db_objects import DESTINATION_MAPPING
 from psycopg2.errors import UniqueViolation
 from psycopg2.extensions import connection as pg_connection
 from psycopg2.extras import RealDictCursor
@@ -56,7 +56,7 @@ class PostgresSaver:
     def save(self, obj):
         obj_type = type(obj)
         assert obj_type in DESTINATION_MAPPING, \
-            'Неизвестный тип "{type}".'.format(type=obj_type)
+            '"{type}" нет в DESTINATION_MAPPING.'.format(type=obj_type)
         destinations = DESTINATION_MAPPING[obj_type]
         
         attribute_mapping = destinations['attribute_to_column']

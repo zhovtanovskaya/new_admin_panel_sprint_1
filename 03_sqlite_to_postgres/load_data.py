@@ -1,14 +1,12 @@
 """Основной модуль для импорта кино из SQLite в PostgreSQL."""
 
-import os
 import sqlite3
 
-from dotenv import load_dotenv
+import settings
+from db_objects import FilmWork, Genre, GenreFilmWork, Person, PersonFilmWork
 from postgres_saver import PostgresSaver, postgres_connection
 from psycopg2.extensions import connection as pg_connection
 from sqlite_loader import SQLiteLoader, sqlite_connection
-
-load_dotenv()
 
 
 def load_from_sqlite(sqlite_conn: sqlite3.Connection, pg_conn: pg_connection):
@@ -35,14 +33,6 @@ def load_from_sqlite(sqlite_conn: sqlite3.Connection, pg_conn: pg_connection):
 
 
 if __name__ == '__main__':
-    dsl = {
-        'dbname': os.getenv('POSTGRES_DB_NAME'),
-        'user': os.getenv('POSTGRES_DB_USER'),
-        'password': os.getenv('POSTGRES_DB_PASSWORD'),
-        'host': '127.0.0.1',
-        'port': 5432,
-    }
-    sqlite_db_name = os.getenv('SQLITE_DB_NAME')
-    with sqlite_connection(sqlite_db_name) as sqlite_conn:
-        with postgres_connection(dsl) as pg_conn:
+    with sqlite_connection(settings.SQLITE_DB_NAME) as sqlite_conn:
+        with postgres_connection(settings.POSTGRES_DB) as pg_conn:
             load_from_sqlite(sqlite_conn, pg_conn)

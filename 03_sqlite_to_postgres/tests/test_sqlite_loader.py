@@ -1,14 +1,13 @@
 from unittest import TestCase, main
 
+import settings
 from db_objects import FilmWork, Person
 from sqlite_loader import SQLiteLoader, create_connection
-
-DB_PATH = 'db.sqlite'
 
 
 class TestSQLiteLoader(TestCase):
     def setUp(self):
-        self.connection = create_connection(DB_PATH)
+        self.connection = create_connection(settings.SQLITE_TEST_DB_NAME)
         self.loader = SQLiteLoader(self.connection)
 
     def tearDown(self):

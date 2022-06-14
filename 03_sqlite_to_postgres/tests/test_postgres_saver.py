@@ -2,16 +2,9 @@ import uuid
 from datetime import datetime, timezone
 from unittest import TestCase, main
 
+import settings
 from db_objects import FilmWork, Person
 from postgres_saver import PostgresSaver, create_connection
-
-DSL = {
-    'dbname': 'movies_database',
-    'user': 'app',
-    'password': '123qwe',
-    'host': '127.0.0.1',
-    'port': 5432,
-}
 
 
 class PostgresTableTestCase(TestCase):
@@ -24,7 +17,7 @@ class PostgresTableTestCase(TestCase):
         self.connection.commit()
 
     def setUp(self):
-        self.connection = create_connection(DSL)
+        self.connection = create_connection(settings.POSTGRES_TEST_DB)
         self._truncate()
 
     def fetchall(self):
