@@ -5,6 +5,17 @@ from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)
+class Genre:
+    """Объектное представление строк таблицы genre."""
+
+    name: str
+    description: str
+    created_at: str = ''
+    updated_at: str = ''
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+
+@dataclass(frozen=True)
 class FilmWork:
     """Объектное представление строк таблицы film_work."""
 
@@ -29,12 +40,33 @@ class Person:
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
+@dataclass(frozen=True)
+class GenreFilmWork:
+    """Объектное предславление строк таблицы genre_film_work."""
+
+    genre_id: uuid.UUID
+    film_work_id: uuid.UUID
+    created_at: str = ''
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+
+@dataclass(frozen=True)
+class PersonFilmWork:
+    """Объектное предславление строк таблицы person_film_work."""
+
+    role: str
+    person_id: uuid.UUID
+    film_work_id: uuid.UUID
+    created_at: str = ''
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+
+
 SOURCE_MAPPING = {
     FilmWork: 'film_work',
     Person: 'person',
-    None: 'genre',
-    None: 'genre_film_work',
-    None: 'person_film_work',
+    Genre: 'genre',
+    GenreFilmWork: 'genre_film_work',
+    PersonFilmWork: 'person_film_work',
 }
 
 
@@ -61,5 +93,34 @@ DESTINATION_MAPPING = {
              'created_at': 'created',
              'updated_at': 'modified',
         }
-    }
+    },
+    Genre: {
+        'destination_table': 'genre',
+        'attribute_to_column': {
+             'id': 'id',
+             'name': 'name',
+             'description': 'description',
+             'created_at': 'created',
+             'updated_at': 'modified',
+        }
+    },
+    GenreFilmWork: {
+        'destination_table': 'genre_film_work',
+        'attribute_to_column': {
+             'id': 'id',
+             'genre_id': 'genre_id',
+             'film_work_id': 'film_work_id',
+             'created_at': 'created',
+        }
+    },
+    PersonFilmWork: {
+        'destination_table': 'person_film_work',
+        'attribute_to_column': {
+             'id': 'id',
+             'person_id': 'person_id',
+             'role': 'role',
+             'film_work_id': 'film_work_id',
+             'created_at': 'created',
+        }
+    },
 }
