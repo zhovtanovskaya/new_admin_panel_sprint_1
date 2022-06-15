@@ -4,7 +4,6 @@ from contextlib import contextmanager
 
 import psycopg2
 from db_objects import DESTINATION_MAPPING
-from psycopg2.errors import UniqueViolation
 from psycopg2.extensions import connection as pg_connection
 from psycopg2.extras import RealDictCursor
 
@@ -49,9 +48,15 @@ class PostgresSaver:
         with self.connection.cursor() as cursor:
             try:
                 cursor.execute(sql, values)
-            except UniqueViolation as e:
-                print(e)
-            self.connection.commit()
+            except psycopg2.Error as e:
+                # Откатить транзакцию, чтобы избежать исключения 
+                # InFailedSqlTransaction("current transaction is 
+                # aborted, commands ignored until end of transaction block")
+                # при следующем вызове cursor.execute().
+                self.connection.rollback()
+                raise e
+            else:
+                self.connection.commit()
 
     def save(self, obj):
         obj_type = type(obj)
