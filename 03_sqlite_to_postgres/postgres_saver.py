@@ -37,7 +37,7 @@ class PostgresSaver:
         placeholders = ('%s',) * len(columns)
         sql = '''
             INSERT INTO {table} ({columns})
-            VALUES ({placeholders});
+            VALUES ({placeholders}) ON CONFLICT DO NOTHING;
         '''.format(
             table=table_name, 
             columns=', '.join(columns), 
