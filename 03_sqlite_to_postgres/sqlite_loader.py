@@ -1,5 +1,5 @@
 import sqlite3
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 
 from db_objects import SOURCE_MAPPING, FilmWork, Person
 
@@ -23,12 +23,14 @@ class SQLiteLoader:
     def __init__(self, connection: sqlite3.Connection):
         self.connection = connection
 
-    def load(self, TableDataClass):
+    def load(self, TableDataClass, fetch_size=10):
         table_name = SOURCE_MAPPING[TableDataClass]
-        curs = self.connection.cursor()
-        curs.execute('SELECT * FROM {table};'.format(table=table_name))
-        data = curs.fetchall()
-        for row in data:
-            row_dict = dict(zip(row.keys(), tuple(row)))
-            obj = TableDataClass(**row_dict)
-            yield obj
+        with closing(self.connection.cursor()) as curs:
+            curs.execute('SELECT * FROM {table};'.format(table=table_name))
+            data = curs.fetchmany(fetch_size)
+            while data:
+                for row in data:
+                    row_dict = dict(zip(row.keys(), tuple(row)))
+                    obj = TableDataClass(**row_dict)
+                    yield obj
+                data = curs.fetchmany(fetch_size)
