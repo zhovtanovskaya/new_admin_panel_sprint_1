@@ -39,7 +39,6 @@ def load_from_sqlite(sqlite_conn: sqlite3.Connection, pg_conn: pg_connection):
                 msg = 'Imported {type} id={id}.'.format(
                     type=type(obj), id=obj.id)
                 logger.debug(msg)
-            break
 
 
 if __name__ == '__main__':
