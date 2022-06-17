@@ -24,8 +24,8 @@ class Genre(TimeStampedData):
 
     name: str
     description: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
@@ -37,8 +37,8 @@ class FilmWork(TimeStampedData):
     description: str
     type: str
     creation_date: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
     file_path: str = ''
     rating: float = field(default=0.0)
     id: uuid.UUID = field(default_factory=uuid.uuid4)
@@ -49,8 +49,8 @@ class Person(TimeStampedData):
     """Объектное предславление строк таблицы person."""
 
     full_name: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
@@ -60,7 +60,7 @@ class GenreFilmWork(TimeStampedData):
 
     genre_id: uuid.UUID
     film_work_id: uuid.UUID
-    created_at: datetime
+    created_at: datetime = field(default_factory=datetime.now)
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
@@ -71,7 +71,7 @@ class PersonFilmWork(TimeStampedData):
     role: str
     person_id: uuid.UUID
     film_work_id: uuid.UUID
-    created_at: datetime
+    created_at: datetime = field(default_factory=datetime.now)
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
