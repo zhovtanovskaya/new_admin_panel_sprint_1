@@ -1,63 +1,77 @@
 """Python-представление данных, импортируемых из SQLite."""
 
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
+from datetime import datetime
+
+from dateutil.parser import parse
 
 
-@dataclass(frozen=True)
-class Genre:
+@dataclass
+class TimeStampedData:
+
+    def __post_init__(self):
+        for field in fields(type(self)):
+            if field.type == datetime:
+                value = getattr(self, field.name)
+                if isinstance(value, str):
+                    setattr(self, field.name, parse(value))
+
+
+@dataclass
+class Genre(TimeStampedData):
     """Объектное представление строк таблицы genre."""
 
     name: str
     description: str
-    created_at: str = ''
-    updated_at: str = ''
+    created_at: datetime
+    updated_at: datetime
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
-@dataclass(frozen=True)
-class FilmWork:
+@dataclass
+class FilmWork(TimeStampedData):
     """Объектное представление строк таблицы film_work."""
 
     title: str
     description: str
     type: str
     creation_date: str
+    created_at: datetime
+    updated_at: datetime
     file_path: str = ''
-    created_at: str = ''
-    updated_at: str = ''
     rating: float = field(default=0.0)
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
-@dataclass(frozen=True)
-class Person:
+@dataclass
+class Person(TimeStampedData):
     """Объектное предславление строк таблицы person."""
 
     full_name: str
-    created_at: str = ''
-    updated_at: str = ''
+    created_at: datetime
+    updated_at: datetime
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
-@dataclass(frozen=True)
-class GenreFilmWork:
+@dataclass
+class GenreFilmWork(TimeStampedData):
     """Объектное предславление строк таблицы genre_film_work."""
 
     genre_id: uuid.UUID
     film_work_id: uuid.UUID
-    created_at: str = ''
+    created_at: datetime
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
-@dataclass(frozen=True)
-class PersonFilmWork:
+@dataclass
+class PersonFilmWork(TimeStampedData):
     """Объектное предславление строк таблицы person_film_work."""
 
     role: str
     person_id: uuid.UUID
     film_work_id: uuid.UUID
-    created_at: str = ''
+    created_at: datetime
     id: uuid.UUID = field(default_factory=uuid.uuid4)
 
 
