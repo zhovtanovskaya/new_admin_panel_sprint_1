@@ -13,7 +13,7 @@ def create_connection(db_path: str):
 @contextmanager
 def sqlite_connection(db_path: str):
     connection = create_connection(db_path)
-    yield create_connection(db_path)
+    yield connection
     connection.close()
 
 
