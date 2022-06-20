@@ -13,7 +13,8 @@ from sqlite_loader import SQLiteLoader, sqlite_connection
 logger = logging.getLogger('root')
 
 
-def load_from_sqlite(sqlite_conn: sqlite3.Connection, pg_conn: pg_connection):
+def load_from_sqlite(
+        sqlite_conn: sqlite3.Connection, pg_conn: pg_connection) -> None:
     """Основной метод загрузки данных из SQLite в Postgres.
 
     Args:
