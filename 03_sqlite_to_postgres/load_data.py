@@ -1,20 +1,48 @@
+"""Основной модуль для импорта кино из SQLite в PostgreSQL."""
+
+import logging
 import sqlite3
 
-import psycopg2
-from psycopg2.extensions import connection as _connection
-from psycopg2.extras import DictCursor
+import settings
+from db_objects import FilmWork, Genre, GenreFilmWork, Person, PersonFilmWork
+from postgres_saver import PostgresSaver, postgres_connection
+from psycopg2.errors import ForeignKeyViolation
+from psycopg2.extensions import connection as pg_connection
+from sqlite_loader import SQLiteLoader, sqlite_connection
+
+logger = logging.getLogger('root')
 
 
-def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
-    """Основной метод загрузки данных из SQLite в Postgres"""
-    # postgres_saver = PostgresSaver(pg_conn)
-    # sqlite_loader = SQLiteLoader(connection)
+def load_from_sqlite(
+        sqlite_conn: sqlite3.Connection, pg_conn: pg_connection) -> None:
+    """Основной метод загрузки данных из SQLite в Postgres.
 
-    # data = sqlite_loader.load_movies()
-    # postgres_saver.save_all_data(data)
+    Args:
+        sqlite_conn: подключение к базе источкику данных SQLite.
+        pg_conn: подключение к базе приемнику данных в PostgreSQL.
+    """
+    loader = SQLiteLoader(sqlite_conn)
+    saver = PostgresSaver(pg_conn)
+
+    sources = (FilmWork, Person, PersonFilmWork, Genre, GenreFilmWork)
+    for source in sources:
+        for obj in loader.load(source):
+            try:
+                saver.save(obj)
+            except ForeignKeyViolation as e:
+                logger.error(e)
+            except Exception as e:
+                msg = 'Failed to save {type} id={id}.'.format(
+                    type=type(obj), id=obj.id)
+                logger.error(msg)
+                logger.exception(e)
+            else:
+                msg = 'Imported {type} id={id}.'.format(
+                    type=type(obj), id=obj.id)
+                logger.debug(msg)
 
 
 if __name__ == '__main__':
-    dsl = {'dbname': 'movies_database', 'user': 'app', 'password': '123qwe', 'host': '127.0.0.1', 'port': 5432}
-    with sqlite3.connect('db.sqlite') as sqlite_conn, psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
-        load_from_sqlite(sqlite_conn, pg_conn)
+    with sqlite_connection(settings.SQLITE_DB_NAME) as sqlite_conn:
+        with postgres_connection(settings.POSTGRES_DB) as pg_conn:
+            load_from_sqlite(sqlite_conn, pg_conn)
