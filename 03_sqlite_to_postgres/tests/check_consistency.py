@@ -1,43 +1,73 @@
+"""Проверка импорта таблиц из SQLite в PostgreSQL."""
+
 import sqlite3
 from contextlib import closing
 
-import dateutil.parser
-import psycopg2
 import settings
-from db_objects import (DESTINATION_MAPPING, SOURCE_MAPPING, FilmWork, Genre,
-                        GenreFilmWork, Person, PersonFilmWork)
+from db_objects import DESTINATION_MAPPING, SOURCE_MAPPING, SQLiteData
 from postgres_saver import postgres_connection
 from psycopg2.extensions import connection as pg_connection
+from psycopg2.extras import RealDictRow
 from sqlite_loader import SQLiteLoader, sqlite_connection
 
 
-def compare_content(sqlite_obj, pg_row, attribute_mapping):
+def compare_content(
+        sqlite_obj: SQLiteData, pg_row: RealDictRow,
+        attribute_mapping: dict) -> None:
+    """Сравнить содержимое SQLite-объекта с строкой из PostgreSQL.
+
+    Args:
+        sqlite_obj: Объектное представление строки SQLite-таблицы.
+        pg_row: Соответствующая sqlite_obj строка таблицы PostgreSQL.
+        attribute_mapping: Отображение столбцов из DESTINATION_MAPPING.
+    """
+    table_name = SOURCE_MAPPING[type(sqlite_obj)]
     for attr, column in attribute_mapping.items():
         sqlite_value = getattr(sqlite_obj, attr, None)
         pg_value = pg_row[column]
-        assert sqlite_value == pg_value, \
-            (
-                'Значение в SQLite "{table_name}.{attr}" не равно '
-                'значению в PostgreSQL "{table_name}.{column}": '
-                '{sqlite_value} != {pg_value}. '
-                'Смотри {table_name}.id = {id}.'
-            ).format(
-                table_name=table_name,
-                attr=attr,
-                column=column,
-                sqlite_value=sqlite_value,
-                pg_value=pg_value,
-                id=sqlite_obj.id)
+        msg = (
+            'Значение в SQLite "{table_name}.{attr}" не равно '
+            'значению в PostgreSQL "{table_name}.{column}": '
+            '{sqlite_value} != {pg_value}. '
+            'Смотри {table_name}.id = {id}.'
+        ).format(
+            table_name=table_name,
+            attr=attr,
+            column=column,
+            sqlite_value=sqlite_value,
+            pg_value=pg_value,
+            id=sqlite_obj.id,
+        )
+        assert sqlite_value == pg_value, msg
 
 
-def get_sqlite_table_size(table_name: str, connection: sqlite3.Connection):
+def get_sqlite_table_size(
+        table_name: str, connection: sqlite3.Connection) -> int:
+    """Посчитать число строк в таблице SQLite.
+
+    Args:
+        table_name: Имя таблицы.
+        connection: Подключение к SQLite.
+
+    Returns:
+        Количество строк в таблице table_name.
+    """
     sql = 'SELECT count(*) FROM {table};'.format(table=table_name)
     with closing(connection.cursor()) as cursor:
         cursor.execute(sql)
         return tuple(cursor.fetchone())[0]
 
 
-def get_pg_table_size(table_name: str, connection: pg_connection):
+def get_pg_table_size(table_name: str, connection: pg_connection) -> int:
+    """Посчитать число строк в таблице PostgreSQL.
+
+    Args:
+        table_name: Имя таблицы.
+        connection: Подключение к PostgreSQL.
+
+    Returns:
+        Количество строк в таблице table_name.
+    """
     sql = 'SELECT count(*) FROM {table};'.format(table=table_name)
     with connection.cursor() as cursor:
         cursor.execute(sql)
