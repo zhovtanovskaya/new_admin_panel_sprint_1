@@ -46,6 +46,8 @@ psql -h $POSTGRES_TEST_DB_HOST -p $POSTGRES_TEST_DB_PORT -U $POSTGRES_TEST_DB_US
 
 Запуск тестов:
 
+Выполнить unit-тесты:
+
 ```
 python -m unit_tests.test_db_objects
 python -m unit_tests.test_postgres_saver
