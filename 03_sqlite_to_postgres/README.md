@@ -44,7 +44,7 @@ cp db.sqlite $SQLITE_TEST_DB_NAME     # Создать базу для тест�
 psql -h $POSTGRES_TEST_DB_HOST -p $POSTGRES_TEST_DB_PORT -U $POSTGRES_TEST_DB_USER -d $POSTGRES_TEST_DB_NAME < ../01_schema_design/create_schema.ddl
 ```
 
-Запуск тестов:
+Выполнить unit-тесты:
 
 ```
 python -m unit_tests.test_db_objects
