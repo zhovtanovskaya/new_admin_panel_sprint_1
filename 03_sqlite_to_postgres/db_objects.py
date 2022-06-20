@@ -7,19 +7,23 @@ from datetime import datetime
 from dateutil.parser import parse
 
 
-@dataclass
-class TimeStampedData:
+class SQLiteData:
+    """Базовый класс для объектного представления таблиц SQLite."""
 
     def __post_init__(self):
-        for field in fields(type(self)):
-            if field.type == datetime:
-                value = getattr(self, field.name)
+        """Сделать изменения после инициализации."""
+        # Привести к типу `datetime` строковые значения
+        # полей с датами.  Указания типа поля `datetime`
+        # в dataclass'е не достаточно.
+        for own_field in fields(type(self)):
+            if own_field.type == datetime:
+                value = getattr(self, own_field.name)
                 if isinstance(value, str):
-                    setattr(self, field.name, parse(value))
+                    setattr(self, own_field.name, parse(value))
 
 
 @dataclass
-class Genre(TimeStampedData):
+class Genre(SQLiteData):
     """Объектное представление строк таблицы genre."""
 
     name: str
@@ -30,7 +34,7 @@ class Genre(TimeStampedData):
 
 
 @dataclass
-class FilmWork(TimeStampedData):
+class FilmWork(SQLiteData):
     """Объектное представление строк таблицы film_work."""
 
     title: str
@@ -45,7 +49,7 @@ class FilmWork(TimeStampedData):
 
 
 @dataclass
-class Person(TimeStampedData):
+class Person(SQLiteData):
     """Объектное предславление строк таблицы person."""
 
     full_name: str
@@ -55,7 +59,7 @@ class Person(TimeStampedData):
 
 
 @dataclass
-class GenreFilmWork(TimeStampedData):
+class GenreFilmWork(SQLiteData):
     """Объектное предславление строк таблицы genre_film_work."""
 
     genre_id: uuid.UUID
@@ -65,7 +69,7 @@ class GenreFilmWork(TimeStampedData):
 
 
 @dataclass
-class PersonFilmWork(TimeStampedData):
+class PersonFilmWork(SQLiteData):
     """Объектное предславление строк таблицы person_film_work."""
 
     role: str
@@ -84,29 +88,29 @@ SOURCE_MAPPING = {
 }
 
 
-DESTINATION_MAPPING = { 
+DESTINATION_MAPPING = {
     Person: {
         'destination_table': 'person',
         'attribute_to_column': {
              'id': 'id',
              'full_name': 'full_name',
              'created_at': 'created',
-             'updated_at': 'modified',                    
-        }
+             'updated_at': 'modified',
+        },
     },
     FilmWork: {
         'destination_table': 'film_work',
         'attribute_to_column': {
             # Имя атрибута и соответствующий ему столбец в базе.
-             'id': 'id',
-             'title': 'title',
-             'description': 'description',
-             'rating': 'rating',
-             'type': 'type',
-             'creation_date': 'creation_date',
-             'created_at': 'created',
-             'updated_at': 'modified',
-        }
+            'id': 'id',
+            'title': 'title',
+            'description': 'description',
+            'rating': 'rating',
+            'type': 'type',
+            'creation_date': 'creation_date',
+            'created_at': 'created',
+            'updated_at': 'modified',
+        },
     },
     Genre: {
         'destination_table': 'genre',
@@ -116,7 +120,7 @@ DESTINATION_MAPPING = {
              'description': 'description',
              'created_at': 'created',
              'updated_at': 'modified',
-        }
+        },
     },
     GenreFilmWork: {
         'destination_table': 'genre_film_work',
@@ -125,7 +129,7 @@ DESTINATION_MAPPING = {
              'genre_id': 'genre_id',
              'film_work_id': 'film_work_id',
              'created_at': 'created',
-        }
+        },
     },
     PersonFilmWork: {
         'destination_table': 'person_film_work',
@@ -135,6 +139,6 @@ DESTINATION_MAPPING = {
              'role': 'role',
              'film_work_id': 'film_work_id',
              'created_at': 'created',
-        }
+        },
     },
 }
