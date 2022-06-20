@@ -17,10 +17,10 @@ def compare_content(sqlite_obj, pg_row, attribute_mapping):
         pg_value = pg_row[column]
         assert sqlite_value == pg_value, \
             (
-                'SQLite value "{table_name}.{attr}" do not '
-                'match PostgreSQL value "{table_name}.{column}": '
+                'Значение в SQLite "{table_name}.{attr}" не равно '
+                'значению в PostgreSQL "{table_name}.{column}": '
                 '{sqlite_value} != {pg_value}. '
-                'In {table_name}.id = {id}.'
+                'Смотри {table_name}.id = {id}.'
             ).format(
                 table_name=table_name,
                 attr=attr,
