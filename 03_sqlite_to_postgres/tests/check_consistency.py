@@ -45,25 +45,33 @@ def get_pg_table_size(table_name: str, connection: pg_connection):
         return row['count']
 
 
-def check_consistency(sqlite_conn: sqlite3.Connection, pg_conn: pg_connection):
-    sources = (FilmWork, Person, PersonFilmWork, Genre, GenreFilmWork)
-    tables = [SOURCE_MAPPING[s] for s in sources]
+def check_consistency(
+        sqlite_conn: sqlite3.Connection, pg_conn: pg_connection):
+    """Сравнить таблицы SQLite и PostgreSQL размерами и построчно.
+
+    Args:
+        sqlite_conn: Подключение к SQLite.
+        pg_conn: Подключение к PostgreSQL.
+    """
+    tables = SOURCE_MAPPING.values()
     # Сравнить размеры таблиц.
     for table_name in tables:
-        sqlite_table_size = get_sqlite_table_size(tables[0], sqlite_conn)
-        pg_table_size = get_pg_table_size(tables[0], pg_conn)
-        assert sqlite_table_size == pg_table_size, \
-            'Размеры таблиц "{table}" не равны'.format(table=table_name)
-    # Сравнить содержимое таблиц.
-    sqlite_loader = SQLiteLoader(sqlite_conn)        
-    for table_name, source in zip(tables, sources):
+        sqlite_table_size = get_sqlite_table_size(table_name, sqlite_conn)
+        pg_table_size = get_pg_table_size(table_name, pg_conn)
+        msg = 'Размеры таблиц "{table}" не равны'.format(table=table_name)
+        assert sqlite_table_size == pg_table_size, msg
+
+    # Сравнить содержимое SQLite и PostgreSQL.
+    sqlite_loader = SQLiteLoader(sqlite_conn)
+    for source, table_name in SOURCE_MAPPING.items():
         for obj in sqlite_loader.load(source):
             sql = 'SELECT * FROM {table} WHERE id=%s;'.format(table=table_name)
             values = (obj.id,)
             with pg_conn.cursor() as cursor:
                 cursor.execute(sql, values)
                 row = cursor.fetchone()
-                attribute_mapping = DESTINATION_MAPPING[source]['attribute_to_column']
+                attribute_mapping = DESTINATION_MAPPING[source][
+                    'attribute_to_column']
                 compare_content(obj, row, attribute_mapping)
 
 
