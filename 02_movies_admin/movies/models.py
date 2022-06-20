@@ -72,7 +72,7 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
     def __str__(self):
         return self.title
 
-   
+
 class GenreFilmWork(UUIDMixin):
     """Связь "много-ко-многим" между фильмами и жанрами."""
 
@@ -119,7 +119,7 @@ class PersonFilmWork(UUIDMixin):
         unique_together = ('film_work', 'person', 'role')
         db_table = 'content\".\"person_film_work'
         verbose_name = _('role')
-        verbose_name_plural = _('roles')        
+        verbose_name_plural = _('roles')
 
     def __str__(self):
         return self.role
