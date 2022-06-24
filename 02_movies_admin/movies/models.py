@@ -76,9 +76,9 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
 class GenreFilmWork(UUIDMixin):
     """Связь "много-ко-многим" между фильмами и жанрами."""
 
-    film_work = models.ForeignKey('FilmWork', on_delete=models.CASCADE)
+    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE)
     genre = models.ForeignKey(
-        'Genre', verbose_name=_('genre'), on_delete=models.CASCADE)
+        Genre, verbose_name=_('genre'), on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -109,9 +109,9 @@ class Person(UUIDMixin, TimeStampedMixin):
 class PersonFilmWork(UUIDMixin):
     """Связь "много-ко-многим" между фильмами и участниками."""
 
-    film_work = models.ForeignKey('FilmWork', on_delete=models.CASCADE)
+    film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE)
     person = models.ForeignKey(
-        'Person', verbose_name=_('person'), on_delete=models.CASCADE)
+        Person, verbose_name=_('person'), on_delete=models.CASCADE)
     role = models.CharField(_('role'), max_length=255)
     created = models.DateTimeField(auto_now_add=True)
 
