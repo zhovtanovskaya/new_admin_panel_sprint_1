@@ -5,5 +5,5 @@ Faker==13.12.0
 flake8==4.0
 isort==5.10.1
 pre-commit==2.15.0
-psycopg2-binary==2.9
+psycopg2-binary==2.9.3
 python-dotenv==0.20.0
