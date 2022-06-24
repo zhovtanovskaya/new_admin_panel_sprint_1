@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-09 04:38+0000\n"
+"POT-Creation-Date: 2022-06-24 07:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,15 +23,15 @@ msgstr "фильмы"
 msgid "name"
 msgstr "имя"
 
-#: movies/models.py:31 movies/models.py:53
+#: movies/models.py:31 movies/models.py:54
 msgid "description"
 msgstr "описание"
 
-#: movies/models.py:35 movies/models.py:80 movies/models.py:85
+#: movies/models.py:35 movies/models.py:81 movies/models.py:87
 msgid "genre"
 msgstr "жанр"
 
-#: movies/models.py:36 movies/models.py:86
+#: movies/models.py:36 movies/models.py:88
 msgid "genres"
 msgstr "жанры"
 
@@ -44,46 +44,58 @@ msgid "TV Show"
 msgstr "телешоу"
 
 #: movies/models.py:52
-msgid "title"
-msgstr "Название"
-
-#: movies/models.py:54
-msgid "creation date"
-msgstr "дата создания"
-
-#: movies/models.py:56
-msgid "rating"
-msgstr "рейтинг"
-
-#: movies/models.py:63
 msgid "type"
 msgstr "тип"
 
-#: movies/models.py:68
+#: movies/models.py:53
+msgid "title"
+msgstr "Название"
+
+#: movies/models.py:55
+msgid "creation date"
+msgstr "дата создания"
+
+#: movies/models.py:57
+msgid "rating"
+msgstr "рейтинг"
+
+#: movies/models.py:69
 msgid "film work"
 msgstr "фильм"
 
-#: movies/models.py:69
+#: movies/models.py:70
 msgid "film works"
 msgstr "фильмы"
 
-#: movies/models.py:95
+#: movies/models.py:97
 msgid "full name"
 msgstr "полное имя"
 
-#: movies/models.py:100 movies/models.py:112
+#: movies/models.py:102 movies/models.py:119
 msgid "person"
-msgstr "личность"
+msgstr "персона"
 
-#: movies/models.py:101
+#: movies/models.py:103
 msgid "persons"
-msgstr "личности"
+msgstr "персоны"
 
-#: movies/models.py:113 movies/models.py:118
+#: movies/models.py:113
+msgid "Actor"
+msgstr "Актер"
+
+#: movies/models.py:114
+msgid "Director"
+msgstr "Режиссер"
+
+#: movies/models.py:115
+msgid "Writer"
+msgstr "Сценарист"
+
+#: movies/models.py:120 movies/models.py:126
 msgid "role"
 msgstr "роль"
 
-#: movies/models.py:119
+#: movies/models.py:127
 #, fuzzy
 #| msgid "role"
 msgid "roles"

@@ -109,10 +109,15 @@ class Person(UUIDMixin, TimeStampedMixin):
 class PersonFilmWork(UUIDMixin):
     """Связь "много-ко-многим" между фильмами и участниками."""
 
+    class Role(models.TextChoices):
+        ACTOR = 'actor', _('Actor')
+        DIRECTOR = 'director', _('Director')
+        WRITER = 'writer', _('Writer')
+
     film_work = models.ForeignKey(FilmWork, on_delete=models.CASCADE)
     person = models.ForeignKey(
         Person, verbose_name=_('person'), on_delete=models.CASCADE)
-    role = models.CharField(_('role'), max_length=255)
+    role = models.CharField(_('role'), max_length=255, choices=Role.choices)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
