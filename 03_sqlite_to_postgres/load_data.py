@@ -43,6 +43,8 @@ def load_from_sqlite(
 
 
 if __name__ == '__main__':
-    with sqlite_connection(settings.SQLITE_DB_NAME) as sqlite_conn:
-        with postgres_connection(settings.POSTGRES_DB) as pg_conn:
+    with (
+        sqlite_connection(settings.SQLITE_DB_NAME) as sqlite_conn,
+        postgres_connection(settings.POSTGRES_DB) as pg_conn,
+    ):
             load_from_sqlite(sqlite_conn, pg_conn)

@@ -54,10 +54,8 @@ class SQLiteLoader:
         table_name = SOURCE_MAPPING[sqlite_data_class]
         with closing(self.connection.cursor()) as curs:
             curs.execute('SELECT * FROM {table};'.format(table=table_name))
-            data = curs.fetchmany(fetch_size)
-            while data:
+            while data := curs.fetchmany(fetch_size):
                 for row in data:
                     row_dict = dict(zip(row.keys(), tuple(row)))
                     obj = sqlite_data_class(**row_dict)
                     yield obj
-                data = curs.fetchmany(fetch_size)
