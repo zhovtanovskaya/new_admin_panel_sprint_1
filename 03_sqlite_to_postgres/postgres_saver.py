@@ -17,7 +17,9 @@ def create_connection(dsl: dict) -> pg_connection:
     Returns:
         Подключение к PostgreSQL.
     """
-    return psycopg2.connect(**dsl, cursor_factory=RealDictCursor)
+    connection = psycopg2.connect(**dsl, cursor_factory=RealDictCursor)
+    connection.set_session(autocommit=True)
+    return connection
 
 
 @contextmanager
@@ -72,17 +74,7 @@ class PostgresSaver:
             psycopg2.Error: В случае ошибки при SQL-вызове.
         """
         with self.connection.cursor() as cursor:
-            try:
-                cursor.execute(sql, values)
-            except psycopg2.Error as e:
-                # Откатить транзакцию, чтобы избежать исключения
-                # InFailedSqlTransaction("current transaction is
-                # aborted, commands ignored until end of transaction block")
-                # при следующем вызове cursor.execute().
-                self.connection.rollback()
-                raise e
-            else:
-                self.connection.commit()
+            cursor.execute(sql, values)
 
     def save(self, obj: SQLiteData) -> None:
         """Копировать SQLite-объект в PostgreSQL-таблицу.
