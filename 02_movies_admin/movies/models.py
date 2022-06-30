@@ -63,6 +63,7 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
         ],
     )
     genres = models.ManyToManyField(Genre, through='GenreFilmWork')
+    persons = models.ManyToManyField('Person', through='PersonFilmWork')
 
     class Meta:
         db_table = 'content\".\"film_work'
